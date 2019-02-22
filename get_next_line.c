@@ -1,22 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: gquence <marvin@42.fr>                     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/19 16:50:58 by gquence           #+#    #+#             */
-/*   Updated: 2019/02/19 18:48:58 by gquence          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "get_next_line.h"
-#include "libft/libft.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
 
 static	char	*ft_get_line(t_list **plst)
 {
@@ -34,7 +16,7 @@ static	char	*ft_get_line(t_list **plst)
 	while (*(line + len) && *(line + len) != '\n')
 		len++;
 	str = (char *)malloc(sizeof(char) * len + 1);
-	content = ft_strdup((line + len + 1));
+	content = strdup((line + len + 1));
 	*(str + len) = 0;
 	while (len--)
 		*(str + len) = *(line + len);
@@ -55,7 +37,7 @@ static	t_list	*ft_corr_file(t_list **file, const int fd)
 	lst = *file;
 	while (lst)
 	{
-		if (lst->content_size == (size_t)fd && *((char *)lst->content))
+		if (lst->content_size == fd && *(lst->content))
 			return (lst);
 		lst = lst->next;
 	}
@@ -68,17 +50,17 @@ static	t_list	*ft_corr_file(t_list **file, const int fd)
 int		get_next_line(const int fd, char **line)
 {
 	static t_list	*file;
-	t_list		*curr;
-	char		*content;
-	char		buf[BUF_SIZE + 1];
-	int		ret;
+	t_list			*curr;
+	char			*content;
+	char			buf[BUF_SIZE + 1];
+	int				ret;
 
 	if (fd < 0 || !line || (BUF_SIZE < 1)  || !(curr = ft_corr_file(&file, fd)))
 		return (-1);
 	while ((ret = read(fd, &buf, BUF_SIZE)))
 	{
 		buf[ret] = 0;
-		content = ft_strdup((char *)(curr->content));
+		content = strdup((char *)(curr->content));
 		free(curr->content);
 		curr->content = (char *)malloc(sizeof(char) * (ret + ft_strlen(content) + 1));
 		curr->content = ft_strcpy((char *)(curr->content), content);
@@ -88,31 +70,39 @@ int		get_next_line(const int fd, char **line)
 			break;
 	}
 	*line = ft_get_line(&curr);
-	if (ret == BUF_SIZE || *((char *)(curr->content)))
+	if (ret == BUF_SIZE || (char)(*(curr->content)))
 		return (1);
 	return (0);
 }
 
-int	main(int ac, char **av)
+
+
+int	main()
 {
-	int fd1 = open(av[1], O_RDONLY);
-	int fd2 = open(av[2], O_RDONLY);
+	char s1[] = "ft_atoi.c";
+	char s2[] = "get_next_line.h";
+
+	int fd1 = open((char *)s2, O_RDONLY);
+	int fd2 = open((char *)s2, O_RDONLY);
 	char	*line1;
 	char	*line2;
-	int 	ret1;
+	int ret1;
+//	cout << line;
 	while ((ret1 = get_next_line(fd1, &line1)) == 1)
 	{
-		printf("%s\n", line1);
+		cout << line1 << endl;
 		free(line1);
 	}
-	printf("%s\n", line1);
+	cout << line1 << endl;
 	free(line1);
 	while ((ret1 = get_next_line(fd2, &line2)) == 1)
 	{
-		printf("%s\n", line2);
+		cout << line2 << endl;
 		free(line2);
 	}
-	printf("%s\n", line2);
+	cout << line2 << endl;
 	free(line2);
-	return (0);	
+	system("pause");
+	_CrtDumpMemoryLeaks();
+	return (0);
 }
