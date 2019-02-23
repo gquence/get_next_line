@@ -100,9 +100,11 @@ int	main(int ac, char **av)
 	char	*line1;
 	char	*line2;
 	int 	ret1;
+	long long int i = 0;
 	while ((ret1 = get_next_line(fd1, &line1)) == 1)
 	{
-		printf("%s\n", line1);
+		i++;
+		printf("%d||%s\n", i, line1);
 		free(line1);
 	}
 	printf("%s\n", line1);

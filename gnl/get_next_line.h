@@ -3,6 +3,6 @@
 
 int		get_next_line(const int fd, char **line);
 
-# define BUF_SIZE  10
+# define BUF_SIZE  8
 
 #endif
