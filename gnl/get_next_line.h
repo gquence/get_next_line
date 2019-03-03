@@ -1,8 +1,22 @@
-#ifndef GET_NEXT_LINE
-# define GET_NEXT_LINE
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gquence <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/02 15:57:12 by gquence           #+#    #+#             */
+/*   Updated: 2019/03/03 16:15:43 by gquence          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
+
+# include <libft.h>
 
 int		get_next_line(const int fd, char **line);
 
-# define BUF_SIZE  8
+# define BUFF_SIZE  10
 
 #endif
