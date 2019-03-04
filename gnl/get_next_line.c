@@ -11,33 +11,34 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-static	int			ft_get_line(t_list **plst, char **ent_line)
+static	int			ft_get_line(t_list **plst, char **line)
 {
-	char			*str;
 	t_list			*lst;
-	char			*line;
-	size_t			len;
 	char			*content;
+	size_t			len;
+	size_t			len_n;
 
-	if (!plst || !*plst)
+	if (!plst || !*plst || !(char *)((*plst)->content) ||
+	!*(char *)((*plst)->content) || !(len = ft_strlen((char *)(*plst)->content)))
 		return (0);
 	lst = *plst;
-	if (!(*(char *)(lst->content)))
-		return (0);
-	line = (char *)(lst->content);
-	len = 0;
-	while (*(line + len) && *(line + len) != '\n')
-		len++;
-	str = (char *)malloc(sizeof(char) * len + 1);
-	*ent_line = str;
-	content = ft_strdup((line + len + 1));
-	*(str + len) = 0;
-	while (len--)
-		*(str + len) = *(line + len);
-	free((lst->content));
-	lst->content = content;
+	content = (char *)(lst->content);
+	len_n = 0;
+	while (*(content + len_n) && *(content + len_n) != '\n')
+		len_n++;
+	if (len_n == len)
+	{
+		*line = content;
+		(lst->content) = (void *)ft_strnew(0);
+		return (1);
+	}
+	*line = ft_strsub(content, 0, len_n);
+	(lst->content) = ft_strsub(content, len_n + 1, (len - len_n));
+	free(content);
 	return (1);
+	
 }
 
 static	t_list		*ft_corr_file(t_list **file, const int fd)
@@ -51,7 +52,7 @@ static	t_list		*ft_corr_file(t_list **file, const int fd)
 	lst = *file;
 	while (lst)
 	{
-		if (lst->content_size == (size_t)fd && *((char *)lst->content))
+		if (lst->content_size == (size_t)fd && ((char *)lst->content))
 			return (lst);
 		lst = lst->next;
 	}
@@ -72,14 +73,15 @@ int					get_next_line(const int fd, char **line)
 	if (fd < 0 || !line || (BUFF_SIZE < 1) ||
 		!(curr = ft_corr_file(&file, fd)))
 		return (-1);
+	if ((ft_strchr((char*)(curr->content),'\n')) && ft_get_line(&curr, line))
+		return (1);
 	while ((ret = read(fd, &buf, BUFF_SIZE)))
 	{
 		if (ret == -1)
 			return (-1);
 		buf[ret] = 0;
-		content = ft_strdup((char *)(curr->content));
-		free(curr->content);
-		curr->content = (char *)ft_strjoin(content, buf);
+		content = (char *)(curr->content);
+		curr->content = (char *)ft_strjoin((char *)(curr->content), buf);
 		free(content);
 		if (ret != BUFF_SIZE || ft_strchr((char *)(curr->content), '\n'))
 			break ;
