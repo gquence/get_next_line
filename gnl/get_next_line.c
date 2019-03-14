@@ -48,7 +48,12 @@ static	t_list		*ft_corr_file(t_list **file, const int fd)
 	if (fd < 0 || !file)
 		return (NULL);
 	if (!*file)
-		return (*file = ft_lstnew("", fd));
+	{
+		
+		*file = ft_lstnew("", 0);
+		*file->content_size = fd;
+		return (*file);
+	}
 	lst = *file;
 	while (lst)
 	{
@@ -56,7 +61,8 @@ static	t_list		*ft_corr_file(t_list **file, const int fd)
 			return (lst);
 		lst = lst->next;
 	}
-	lst = ft_lstnew("", fd);
+	lst = ft_lstnew("", 0);
+	lst->content_size = fd;
 	ft_lstadd(file, lst);
 	lst = *file;
 	return (lst);
