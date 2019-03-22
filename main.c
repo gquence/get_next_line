@@ -6,8 +6,11 @@ int	main()
 	int	fd;
 	char *line;
 
-	fd = open("war-and-peace.txt", O_RDONLY);
+	fd = open("wap.c", O_RDONLY);
 	while (get_next_line(fd, &line) == 1)
+	{
 		printf("%s", line);
+		free (line);
+	}
 	return (0);
 }
